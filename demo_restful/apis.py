@@ -1,7 +1,9 @@
 # coding:utf-8
 import time
 from django.utils import timezone
+from django.db.models import Q
 from rest_framework import status
+from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.generics import (ListAPIView, RetrieveAPIView,
                                      UpdateAPIView, DestroyAPIView,
                                      CreateAPIView)
@@ -12,6 +14,7 @@ from rest_framework.permissions import (IsAuthenticated, IsAdminUser,
 from user.models import User
 from .serializers import (UserSerializer, UserDetailSerializer,
                           UserCreateUpdateSerializer)
+from .paginations import UserPagination
 from .permissions import IsAdminOrOwner, ReadOnly, IsSuperuser
 
 
@@ -51,8 +54,18 @@ class Handle(APIView):
 class UserListAPIView(ListAPIView):
 
     permission_classes = [IsAdminUser]
-    queryset = User.objects.all()
     serializer_class = UserSerializer
+    pagination_class = UserPagination
+    filter_backends = (SearchFilter, OrderingFilter)
+    search_fields = ('username', 'email')
+
+    def get_queryset(self):
+        queryset = User.objects.all()
+        exact_query = self.request.GET.get('q')
+        if exact_query:
+            queryset = queryset.filter(Q(username=exact_query) |
+                                       Q(email__icontains=exact_query))
+        return queryset
 
 user_list = UserListAPIView.as_view()
 
