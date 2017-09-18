@@ -15,7 +15,7 @@ from user.models import User
 from .serializers import (UserSerializer, UserDetailSerializer,
                           UserCreateUpdateSerializer)
 from .paginations import UserPagination
-from .permissions import IsAdminOrOwner, ReadOnly, IsSuperuser
+from .permissions import IsSuperuserOrOwner
 
 
 class ClientInfo(APIView):
@@ -43,12 +43,17 @@ class Now(APIView):
 get_time = Now.as_view()
 
 
-class Handle(APIView):
+class EchoPost(APIView):
     http_method_names = ['post']
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
+        data = request.data
+        return Response(data=data,
+                        status=status.HTTP_200_OK)
         pass
+
+echo_post = EchoPost.as_view()
 
 
 class UserListAPIView(ListAPIView):
@@ -72,11 +77,10 @@ user_list = UserListAPIView.as_view()
 
 class UserDetailAPIView(RetrieveAPIView):
 
-    permission_classes = (IsAdminOrOwner,)
+    permission_classes = (IsSuperuserOrOwner,)
     queryset = User.objects.all()
     serializer_class = UserDetailSerializer
     lookup_field = 'username'
-    # lookup_url_kwarg = 'name'
 
 user_detail = UserDetailAPIView.as_view()
 
@@ -85,30 +89,24 @@ class UserCreateAPIView(CreateAPIView):
 
     queryset = User.objects.all()
     serializer_class = UserCreateUpdateSerializer
-    # lookup_field = 'username'
-    # lookup_url_kwarg = 'name'
 
 user_create = UserCreateAPIView.as_view()
 
 
 class UserUpdateAPIView(UpdateAPIView):
 
-    permission_classes = (IsAdminOrOwner,)
+    permission_classes = (IsSuperuserOrOwner,)
     queryset = User.objects.all()
     serializer_class = UserCreateUpdateSerializer
-    # lookup_field = 'username'
-    # lookup_url_kwarg = 'name'
 
 user_update = UserUpdateAPIView.as_view()
 
 
 class UserDeleteAPIView(DestroyAPIView):
 
-    permission_classes = (IsSuperuser,)
+    permission_classes = (IsSuperuserOrOwner,)
     queryset = User.objects.all()
-    # serializer_class = UserSerializer
-    # lookup_field = 'username'
-    # lookup_url_kwarg = 'name'
+    serializer_class = UserSerializer
 
 user_delete = UserDeleteAPIView.as_view()
 

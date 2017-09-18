@@ -73,7 +73,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         ('M', 'Male'),
         ('F', 'Female'),
     )
-    gender = models.CharField('Gender', choices=GENDER, blank=True,
+    gender = models.CharField('Gender', choices=GENDER,
                               default=GENDER[0][0], max_length=1)
 
     objects = MyUserManager()

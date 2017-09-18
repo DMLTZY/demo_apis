@@ -8,7 +8,7 @@ class IsSuperuser(BasePermission):
         return request.user.is_superuser
 
 
-class IsAdminOrOwner(BasePermission):
+class IsSuperuserOrOwner(BasePermission):
     message = 'You are not admin or owner'
 
     def has_object_permission(self, request, view, obj):
