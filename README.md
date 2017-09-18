@@ -1,6 +1,6 @@
 ### demo_apis
 
-Using django rest framework to handle restful api, this scratch includes custom User, custom permission and token based authentication.
+Using django rest framework to handle restful api, this boilerplate includes custom User, custom permission and token based authentication.
 
 #### apis
 
