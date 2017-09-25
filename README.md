@@ -23,3 +23,5 @@ GET: `http://127.0.0.1:8002/apis/gt/`
 GET: `http://127.0.0.1:8002/apis/ci/`
 
 POST: `http://127.0.0.1:8002/apis/ep/`
+
+POST: `http://127.0.0.1:8002/apis/sleep/`
