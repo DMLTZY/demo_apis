@@ -17,6 +17,8 @@ from .serializers import (UserSerializer, UserDetailSerializer,
 from .paginations import UserPagination
 from .permissions import IsSuperuserOrOwner
 
+from demo_celery.tasks import celery_test
+
 
 class ClientInfo(APIView):
     http_method_names = ['get']
@@ -41,6 +43,22 @@ class Now(APIView):
                         status=status.HTTP_200_OK)
 
 get_time = Now.as_view()
+
+
+class DoCelery(APIView):
+    http_method_names = ['post']
+
+    def post(self, request, *args, **kwargs):
+        try:
+            sleep = request.data.get('sleep')
+            sleep = int(sleep)
+        except:
+            return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+        celery_test.apply_async([sleep, ])
+        return Response({'status': 'Task is running in backend'},
+                        status=status.HTTP_200_OK)
+
+do_celery = DoCelery.as_view()
 
 
 class EchoPost(APIView):
